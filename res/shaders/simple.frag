@@ -22,13 +22,18 @@ void main()
     vec3 ambientColor = vec3(0.2, 0.2, 0.2);
     vec3 lightColor = vec3(0.3, 0.3, 0.3);
 
-    vec3 resultColor = ambientColor;
+    vec3 resultColor = vec3(0.0);
 
     float specularIntensity = 0.2;
+
+    float l_a = 0.9;
+    float l_b = 0.002;
+    float l_c = 0.002;
 
     for (int i = 0; i < lightsCount; i++) {
         vec3 lightPos = lights[i];
         vec3 lightDir = normalize(lightPos - fragPos);
+        float lightDist = length(lightPos - fragPos);
 
         float diff = max(dot(normal, lightDir), 0.0);
         vec3 diffuse = diff * lightColor;
@@ -39,8 +44,12 @@ void main()
         float spec = pow(max(dot(viewDir, reflection), 0.0), 32);
         vec3 specular = specularIntensity * spec * lightColor;
 
-        resultColor += diffuse + specular;
+        float attenuation = 1.0 / (l_a + l_b * lightDist + l_c * lightDist * lightDist);
+
+        resultColor += (diffuse + specular) * attenuation;
     }
+
+    resultColor += ambientColor;
 
     color = vec4(resultColor, 1.0);
 }
