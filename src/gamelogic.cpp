@@ -347,11 +347,7 @@ void updateFrame(GLFWwindow* window) {
         boxNode->position.z - (boxDimensions.z/2) + (padDimensions.z/2) + (1 - padPositionZ) * (boxDimensions.z - padDimensions.z)
     };
 
-    updateNodeTransformations(rootNode, glm::mat4());
-
-
-
-
+    updateNodeTransformations(rootNode, glm::mat4(1.0f));
 }
 
 void updateNodeTransformations(SceneNode* node, glm::mat4 transformationThusFar) {

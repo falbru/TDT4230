@@ -15,5 +15,5 @@ void main()
 {
     normal_out = normalize(N * normal_in);
     textureCoordinates_out = textureCoordinates_in;
-    gl_Position = M * VP * vec4(position, 1.0f);
+    gl_Position = VP * M * vec4(position, 1.0f);
 }
