@@ -6,6 +6,7 @@ in layout(location = 2) vec2 textureCoordinates_in;
 
 out layout(location = 0) vec3 normal_out;
 out layout(location = 1) vec2 textureCoordinates_out;
+out layout(location = 2) vec3 fragPos_out;
 
 uniform mat4 M;
 uniform mat4 VP;
@@ -15,5 +16,9 @@ void main()
 {
     normal_out = normalize(N * normal_in);
     textureCoordinates_out = textureCoordinates_in;
-    gl_Position = VP * M * vec4(position, 1.0f);
+
+    vec4 modelPos = M * vec4(position, 1.0f);
+    fragPos_out = vec3(modelPos);
+
+    gl_Position = VP * modelPos;
 }
