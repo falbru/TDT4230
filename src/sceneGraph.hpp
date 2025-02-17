@@ -8,8 +8,8 @@
 #include <vector>
 #include <cstdio>
 #include <stdbool.h>
-#include <cstdlib> 
-#include <ctime> 
+#include <cstdlib>
+#include <ctime>
 #include <chrono>
 #include <fstream>
 
@@ -26,6 +26,7 @@ struct SceneNode {
         referencePoint = glm::vec3(0, 0, 0);
         vertexArrayObjectID = -1;
         VAOIndexCount = 0;
+        lightIndex = -1;
 
         nodeType = GEOMETRY;
 
@@ -34,7 +35,7 @@ struct SceneNode {
 	// A list of all children that belong to this node.
 	// For instance, in case of the scene graph of a human body shown in the assignment text, the "Upper Torso" node would contain the "Left Arm", "Right Arm", "Head" and "Lower Torso" nodes in its list of children.
 	std::vector<SceneNode*> children;
-	
+
 	// The node's position and rotation relative to its parent
 	glm::vec3 position;
 	glm::vec3 rotation;
@@ -52,9 +53,14 @@ struct SceneNode {
 
 	// Node type is used to determine how to handle the contents of a node
 	SceneNodeType nodeType;
+
+    // Light logic
+	static int lightCount;
+	int lightIndex;
 };
 
 SceneNode* createSceneNode();
+SceneNode* createLightSceneNode();
 void addChild(SceneNode* parent, SceneNode* child);
 void printNode(SceneNode* node);
 int totalChildren(SceneNode* parent);

@@ -38,6 +38,10 @@ SceneNode* boxNode;
 SceneNode* ballNode;
 SceneNode* padNode;
 
+SceneNode* ballLightNode;
+SceneNode* ceilingLightNode;
+SceneNode* padLightNode;
+
 double ballRadius = 3.0f;
 
 // These are heap allocated, because they should not be initialised at the start of the program
@@ -126,22 +130,29 @@ void initGame(GLFWwindow* window, CommandLineOptions gameOptions) {
     boxNode  = createSceneNode();
     padNode  = createSceneNode();
     ballNode = createSceneNode();
+    ballLightNode = createLightSceneNode();
+    ceilingLightNode = createLightSceneNode();
+    padLightNode = createLightSceneNode();
 
     rootNode->children.push_back(boxNode);
     rootNode->children.push_back(padNode);
     rootNode->children.push_back(ballNode);
+    rootNode->children.push_back(ceilingLightNode);
 
     boxNode->vertexArrayObjectID  = boxVAO;
     boxNode->VAOIndexCount        = box.indices.size();
 
     padNode->vertexArrayObjectID  = padVAO;
     padNode->VAOIndexCount        = pad.indices.size();
+    padNode->children.push_back(padLightNode);
 
     ballNode->vertexArrayObjectID = ballVAO;
     ballNode->VAOIndexCount       = sphere.indices.size();
+    ballNode->children.push_back(ballLightNode);
 
-
-
+    ballNode->position = glm::vec3(0, 0, 0);
+    ceilingLightNode->position = glm::vec3(0, 80, 0);
+    padNode->position = glm::vec3(0, 0, 0);
 
 
 

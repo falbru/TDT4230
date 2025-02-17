@@ -1,8 +1,16 @@
 #include "sceneGraph.hpp"
-#include <iostream>
 
 SceneNode* createSceneNode() {
 	return new SceneNode();
+}
+
+int SceneNode::lightCount = 0;
+SceneNode* createLightSceneNode() {
+	SceneNode *light = new SceneNode();
+	light->nodeType = SceneNodeType::POINT_LIGHT;
+	light->lightIndex = SceneNode::lightCount;
+	SceneNode::lightCount++;
+	return light;
 }
 
 // Add a child node to its parent's list of children
@@ -31,7 +39,6 @@ void printNode(SceneNode* node) {
 		int(node->children.size()),
 		node->rotation.x, node->rotation.y, node->rotation.z,
 		node->position.x, node->position.y, node->position.z,
-		node->referencePoint.x, node->referencePoint.y, node->referencePoint.z, 
+		node->referencePoint.x, node->referencePoint.y, node->referencePoint.z,
 		node->vertexArrayObjectID);
 }
-
