@@ -55,7 +55,7 @@ struct SceneNode {
 	SceneNodeType nodeType;
 
     // Light logic
-	static int lightCount;
+	static int lightsCount;
 	int lightIndex;
 };
 

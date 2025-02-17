@@ -387,7 +387,9 @@ void renderNode(SceneNode* node) {
                 glDrawElements(GL_TRIANGLES, node->VAOIndexCount, GL_UNSIGNED_INT, nullptr);
             }
             break;
-        case POINT_LIGHT: break;
+        case POINT_LIGHT:
+            glUniform3fv(shader->getUniformFromName("lights[" + std::to_string(node->lightIndex) + "]"), 1, glm::value_ptr(glm::vec3(node->currentTransformationMatrix[3])));
+            break;
         case SPOT_LIGHT: break;
     }
 
@@ -401,6 +403,7 @@ void renderFrame(GLFWwindow* window) {
     glfwGetWindowSize(window, &windowWidth, &windowHeight);
     glViewport(0, 0, windowWidth, windowHeight);
 
+    glUniform1i(shader->getUniformFromName("lightsCount"), SceneNode::lightsCount);
     glUniformMatrix4fv(shader->getUniformFromName("VP"), 1, GL_FALSE, glm::value_ptr(VP));
 
     renderNode(rootNode);

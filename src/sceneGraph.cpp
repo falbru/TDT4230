@@ -4,12 +4,12 @@ SceneNode* createSceneNode() {
 	return new SceneNode();
 }
 
-int SceneNode::lightCount = 0;
+int SceneNode::lightsCount = 0;
 SceneNode* createLightSceneNode() {
 	SceneNode *light = new SceneNode();
 	light->nodeType = SceneNodeType::POINT_LIGHT;
-	light->lightIndex = SceneNode::lightCount;
-	SceneNode::lightCount++;
+	light->lightIndex = SceneNode::lightsCount;
+	SceneNode::lightsCount++;
 	return light;
 }
 
