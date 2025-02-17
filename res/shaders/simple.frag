@@ -13,24 +13,33 @@ float dither(vec2 uv) { return (rand(uv)*2.0-1.0) / 256.0; }
 
 uniform int lightsCount;
 uniform vec3 lights[MAX_LIGHTS];
+uniform vec3 cameraPos;
 
 void main()
 {
     vec3 normal = normalize(normal_in);
 
     vec3 ambientColor = vec3(0.2, 0.2, 0.2);
-    vec3 surfaceColor = vec3(0.3, 0.3, 0.3);
+    vec3 lightColor = vec3(0.3, 0.3, 0.3);
 
     vec3 resultColor = ambientColor;
+
+    float specularIntensity = 0.2;
 
     for (int i = 0; i < lightsCount; i++) {
         vec3 lightPos = lights[i];
         vec3 lightDir = normalize(lightPos - fragPos);
 
         float diff = max(dot(normal, lightDir), 0.0);
-        vec3 diffuse = diff * surfaceColor;
+        vec3 diffuse = diff * lightColor;
 
-        resultColor += diffuse;
+        vec3 reflection = reflect(-lightDir, normal);
+        vec3 viewDir = normalize(cameraPos - fragPos);
+
+        float spec = pow(max(dot(viewDir, reflection), 0.0), 32);
+        vec3 specular = specularIntensity * spec * lightColor;
+
+        resultColor += diffuse + specular;
     }
 
     color = vec4(resultColor, 1.0);

@@ -46,6 +46,8 @@ double ballRadius = 3.0f;
 
 glm::mat4 VP;
 
+glm::vec3 cameraPosition(0, 2, -20);
+
 // These are heap allocated, because they should not be initialised at the start of the program
 sf::SoundBuffer* buffer;
 Gloom::Shader* shader;
@@ -323,8 +325,6 @@ void updateFrame(GLFWwindow* window) {
 
     glm::mat4 projection = glm::perspective(glm::radians(80.0f), float(windowWidth) / float(windowHeight), 0.1f, 350.f);
 
-    glm::vec3 cameraPosition = glm::vec3(0, 2, -20);
-
     // Some math to make the camera move in a nice way
     float lookRotation = -0.6 / (1 + exp(-5 * (padPositionX-0.5))) + 0.3;
     glm::mat4 cameraTransform =
@@ -376,6 +376,7 @@ void updateNodeTransformations(SceneNode* node, glm::mat4 transformationThusFar)
 }
 
 void renderNode(SceneNode* node) {
+    glUniform3fv(shader->getUniformFromName("cameraPos"), 1, glm::value_ptr(cameraPosition));
     glUniformMatrix4fv(shader->getUniformFromName("M"), 1, GL_FALSE, glm::value_ptr(node->currentTransformationMatrix));
     glUniformMatrix3fv(shader->getUniformFromName("N"), 1, GL_FALSE, glm::value_ptr(node->currentNormalMatrix));
 
