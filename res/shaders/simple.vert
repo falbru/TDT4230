@@ -9,10 +9,11 @@ out layout(location = 1) vec2 textureCoordinates_out;
 
 uniform mat4 M;
 uniform mat4 VP;
+uniform mat3 N;
 
 void main()
 {
-    normal_out = normal_in;
+    normal_out = normalize(N * normal_in);
     textureCoordinates_out = textureCoordinates_in;
     gl_Position = M * VP * vec4(position, 1.0f);
 }

@@ -367,7 +367,9 @@ void updateNodeTransformations(SceneNode* node, glm::mat4 transformationThusFar)
     node->currentTransformationMatrix = transformationThusFar * transformationMatrix;
 
     switch(node->nodeType) {
-        case GEOMETRY: break;
+        case GEOMETRY:
+            node->currentNormalMatrix = glm::transpose(glm::inverse(glm::mat3(node->currentTransformationMatrix)));
+            break;
         case POINT_LIGHT: break;
         case SPOT_LIGHT: break;
     }
@@ -379,6 +381,7 @@ void updateNodeTransformations(SceneNode* node, glm::mat4 transformationThusFar)
 
 void renderNode(SceneNode* node) {
     glUniformMatrix4fv(shader->getUniformFromName("M"), 1, GL_FALSE, glm::value_ptr(node->currentTransformationMatrix));
+    glUniformMatrix3fv(shader->getUniformFromName("N"), 1, GL_FALSE, glm::value_ptr(node->currentNormalMatrix));
 
     switch(node->nodeType) {
         case GEOMETRY:

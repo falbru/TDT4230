@@ -15,5 +15,6 @@ uniform vec3 lights[MAX_LIGHTS];
 
 void main()
 {
-    color = vec4(0.5 * normal + 0.5, 1.0);
+    vec3 normalizedNormal = normalize(normal);
+    color = vec4(0.5 * normalizedNormal + 0.5, 1.0);
 }
