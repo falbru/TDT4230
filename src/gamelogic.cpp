@@ -140,11 +140,13 @@ void initGame(GLFWwindow *window, CommandLineOptions gameOptions)
     Mesh pad = cube(padDimensions, glm::vec2(30, 40), true);
     Mesh box = cube(boxDimensions, glm::vec2(90), true, true);
     Mesh sphere = generateSphere(1.0, 40, 40);
+    Mesh text = generateTextGeometryBuffer("Hello World", 39.0f / 29.0f, 60);
 
     // Fill buffers
     unsigned int ballVAO = generateBuffer(sphere);
     unsigned int boxVAO = generateBuffer(box);
     unsigned int padVAO = generateBuffer(pad);
+    unsigned int textVAO = generateBuffer(text);
 
     // Load textures
     charmap = loadPNGFile("../res/textures/charmap.png");
