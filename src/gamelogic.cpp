@@ -106,8 +106,14 @@ void mouseCallback(GLFWwindow *window, double x, double y)
     glfwSetCursorPos(window, windowWidth / 2, windowHeight / 2);
 }
 
-unsigned int genTexture(const PNGImage& img) {
-    return 0;
+unsigned int genTexture(const PNGImage &img)
+{
+    unsigned int textureId;
+    glGenTextures(1, &textureId);
+    glBindTexture(GL_TEXTURE_2D, textureId);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img.width, img.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, img.pixels.data());
+    return textureId;
 }
 
 void initGame(GLFWwindow *window, CommandLineOptions gameOptions)
