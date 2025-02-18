@@ -16,6 +16,8 @@
 enum SceneNodeType
 {
     GEOMETRY,
+    GEOMETRY_2D,
+    NORMAL_MAPPED_GEOMETRY,
     POINT_LIGHT,
     SPOT_LIGHT
 };
@@ -62,6 +64,10 @@ struct SceneNode
 
     // Node type is used to determine how to handle the contents of a node
     SceneNodeType nodeType;
+
+    // Textures
+    unsigned int textureID;
+    unsigned int normalMapTextureID;
 
     // Light logic
     static int lightsCount;

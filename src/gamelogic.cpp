@@ -38,6 +38,7 @@ SceneNode *rootNode;
 SceneNode *boxNode;
 SceneNode *ballNode;
 SceneNode *padNode;
+SceneNode *textNode;
 
 SceneNode *ballLightNode;
 SceneNode *ceilingLightNode;
@@ -140,7 +141,7 @@ void initGame(GLFWwindow *window, CommandLineOptions gameOptions)
     Mesh pad = cube(padDimensions, glm::vec2(30, 40), true);
     Mesh box = cube(boxDimensions, glm::vec2(90), true, true);
     Mesh sphere = generateSphere(1.0, 40, 40);
-    Mesh text = generateTextGeometryBuffer("Hello World", 39.0f / 29.0f, 60);
+    Mesh text = generateTextGeometryBuffer("Hello World", 39.0f / 29.0f, 1);
 
     // Fill buffers
     unsigned int ballVAO = generateBuffer(sphere);
@@ -156,6 +157,7 @@ void initGame(GLFWwindow *window, CommandLineOptions gameOptions)
     boxNode = createSceneNode();
     padNode = createSceneNode();
     ballNode = createSceneNode();
+    textNode = createSceneNode();
     ballLightNode = createLightSceneNode();
     ceilingLightNode = createLightSceneNode();
     padLightNode = createLightSceneNode();
@@ -164,6 +166,7 @@ void initGame(GLFWwindow *window, CommandLineOptions gameOptions)
     rootNode->children.push_back(padNode);
     rootNode->children.push_back(ballNode);
     rootNode->children.push_back(ceilingLightNode);
+    rootNode->children.push_back(textNode);
 
     boxNode->vertexArrayObjectID = boxVAO;
     boxNode->VAOIndexCount = box.indices.size();
@@ -175,6 +178,10 @@ void initGame(GLFWwindow *window, CommandLineOptions gameOptions)
     ballNode->vertexArrayObjectID = ballVAO;
     ballNode->VAOIndexCount = sphere.indices.size();
     ballNode->children.push_back(ballLightNode);
+
+    textNode->vertexArrayObjectID = textVAO;
+    textNode->nodeType = SceneNodeType::GEOMETRY_2D;
+    textNode->VAOIndexCount = text.indices.size();
 
     ballNode->position = glm::vec3(0, 0, 0);
     padNode->position = glm::vec3(0, 0, 0);
@@ -447,6 +454,8 @@ void renderNode(SceneNode *node)
     switch (node->nodeType)
     {
     case GEOMETRY:
+    case GEOMETRY_2D:
+        glUniform1i(shader->getUniformFromName("is2D"), node->nodeType == SceneNodeType::GEOMETRY_2D);
         if (node->vertexArrayObjectID != -1)
         {
             glBindVertexArray(node->vertexArrayObjectID);
