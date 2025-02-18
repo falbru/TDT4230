@@ -106,6 +106,10 @@ void mouseCallback(GLFWwindow *window, double x, double y)
     glfwSetCursorPos(window, windowWidth / 2, windowHeight / 2);
 }
 
+unsigned int genTexture(const PNGImage& img) {
+    return 0;
+}
+
 void initGame(GLFWwindow *window, CommandLineOptions gameOptions)
 {
     buffer = new sf::SoundBuffer();
