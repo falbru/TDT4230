@@ -8,13 +8,21 @@ in layout(location = 2) vec3 fragPos;
 
 out vec4 color;
 
-float rand(vec2 co) { return fract(sin(dot(co.xy, vec2(12.9898,78.233))) * 43758.5453); }
-float dither(vec2 uv) { return (rand(uv)*2.0-1.0) / 256.0; }
-vec3 reject(vec3 from, vec3 onto) {
-    return from - onto*dot(from, onto)/dot(onto, onto);
+float rand(vec2 co)
+{
+    return fract(sin(dot(co.xy, vec2(12.9898, 78.233))) * 43758.5453);
+}
+float dither(vec2 uv)
+{
+    return (rand(uv) * 2.0 - 1.0) / 256.0;
+}
+vec3 reject(vec3 from, vec3 onto)
+{
+    return from - onto * dot(from, onto) / dot(onto, onto);
 }
 
-struct Light {
+struct Light
+{
     vec3 position;
     vec3 color;
 };
@@ -42,7 +50,8 @@ void main()
 
     float softShadowRadius = 1.0;
 
-    for (int i = 0; i < lightsCount; i++) {
+    for (int i = 0; i < lightsCount; i++)
+    {
         vec3 lightPos = lights[i].position;
         vec3 lightColor = lights[i].color;
 
@@ -56,7 +65,8 @@ void main()
         float shadowFactor = 1.0;
 
         float rejection = length(reject(toBall, toLight));
-        if (lightDist > ballDist && dot(toLight, toBall) > 0.0 && rejection < ballRadius + softShadowRadius) {
+        if (lightDist > ballDist && dot(toLight, toBall) > 0.0 && rejection < ballRadius + softShadowRadius)
+        {
             shadowFactor = (rejection < ballRadius) ? 0.0 : mix(0.0, 1.0, (rejection - ballRadius) / softShadowRadius);
         }
 
