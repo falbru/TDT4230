@@ -40,6 +40,8 @@ void main()
     float l_b = 0.002;
     float l_c = 0.002;
 
+    float softShadowRadius = 1.0;
+
     for (int i = 0; i < lightsCount; i++) {
         vec3 lightPos = lights[i].position;
         vec3 lightColor = lights[i].color;
@@ -51,8 +53,11 @@ void main()
         vec3 toBall = ballPos - fragPos;
         float ballDist = length(toBall);
 
-        if (lightDist > ballDist && dot(toLight, toBall) > 0.0 && length(reject(toBall, toLight)) < ballRadius) {
-            continue;
+        float shadowFactor = 1.0;
+
+        float rejection = length(reject(toBall, toLight));
+        if (lightDist > ballDist && dot(toLight, toBall) > 0.0 && rejection < ballRadius + softShadowRadius) {
+            shadowFactor = (rejection < ballRadius) ? 0.0 : mix(0.0, 1.0, (rejection - ballRadius) / softShadowRadius);
         }
 
         float diff = max(dot(normal, lightDir), 0.0);
@@ -66,7 +71,7 @@ void main()
 
         float attenuation = 1.0 / (l_a + l_b * lightDist + l_c * lightDist * lightDist);
 
-        resultColor += (diffuse + specular) * attenuation;
+        resultColor += (diffuse + specular) * attenuation * shadowFactor;
     }
 
     resultColor += ambientColor;
