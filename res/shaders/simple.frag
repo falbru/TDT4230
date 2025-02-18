@@ -19,12 +19,12 @@ void main()
 {
     vec3 normal = normalize(normal_in);
 
-    vec3 ambientColor = vec3(0.2, 0.2, 0.2);
-    vec3 lightColor = vec3(0.3, 0.3, 0.3);
+    vec3 ambientColor = vec3(0.3, 0.3, 0.3);
+    vec3 lightColor = vec3(0.4, 0.4, 0.4);
 
     vec3 resultColor = vec3(0.0);
 
-    float specularIntensity = 0.2;
+    float specularIntensity = 0.3;
 
     float l_a = 0.9;
     float l_b = 0.002;
@@ -51,5 +51,5 @@ void main()
 
     resultColor += ambientColor;
 
-    color = vec4(resultColor, 1.0);
+    color = vec4(resultColor + dither(textureCoordinates), 1.0);
 }
