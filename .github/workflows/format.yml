@@ -1,0 +1,31 @@
+name: Format Check
+
+on: [push]
+
+jobs:
+  format:
+    name: Check code formatting with clang-format
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install clang-format
+      run: |
+        sudo apt-get update -q && sudo apt-get install -y clang-format
+        clang-format --version
+
+    - name: Run clang-format
+      run: |
+        find src/ -type f -exec clang-format --style Microsoft -i {} \;
+        find res/shaders/ -type f -exec clang-format --style Microsoft -i {} \;
+        git diff --exit-code
+
+
+    - name: Check for .h files
+      run: |
+        if find src/ -name "*.h" | grep -q .; then
+          echo ".h file(s) found. Please ues the .hpp extension instead"
+          exit 1
+        fi
