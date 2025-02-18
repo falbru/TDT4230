@@ -14,8 +14,13 @@ vec3 reject(vec3 from, vec3 onto) {
     return from - onto*dot(from, onto)/dot(onto, onto);
 }
 
+struct Light {
+    vec3 position;
+    vec3 color;
+};
+
 uniform int lightsCount;
-uniform vec3 lights[MAX_LIGHTS];
+uniform Light lights[MAX_LIGHTS];
 uniform vec3 cameraPos;
 
 uniform float ballRadius;
@@ -26,7 +31,6 @@ void main()
     vec3 normal = normalize(normal_in);
 
     vec3 ambientColor = vec3(0.3, 0.3, 0.3);
-    vec3 lightColor = vec3(0.4, 0.4, 0.4);
 
     vec3 resultColor = vec3(0.0);
 
@@ -37,7 +41,8 @@ void main()
     float l_c = 0.002;
 
     for (int i = 0; i < lightsCount; i++) {
-        vec3 lightPos = lights[i];
+        vec3 lightPos = lights[i].position;
+        vec3 lightColor = lights[i].color;
 
         vec3 toLight = lightPos - fragPos;
         float lightDist = length(toLight);

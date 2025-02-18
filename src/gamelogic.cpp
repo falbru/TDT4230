@@ -98,12 +98,6 @@ void mouseCallback(GLFWwindow* window, double x, double y) {
     glfwSetCursorPos(window, windowWidth / 2, windowHeight / 2);
 }
 
-//// A few lines to help you if you've never used c++ structs
-// struct LightSource {
-//     bool a_placeholder_value;
-// };
-// LightSource lightSources[/*Put number of light sources you want here*/];
-
 void initGame(GLFWwindow* window, CommandLineOptions gameOptions) {
     buffer = new sf::SoundBuffer();
     if (!buffer->loadFromFile("../res/Hall of the Mountain King.ogg")) {
@@ -155,9 +149,12 @@ void initGame(GLFWwindow* window, CommandLineOptions gameOptions) {
     ballNode->children.push_back(ballLightNode);
 
     ballNode->position = glm::vec3(0, 0, 0);
-    ceilingLightNode->position = glm::vec3(0, 80, 0);
     padNode->position = glm::vec3(0, 0, 0);
+    ceilingLightNode->position = glm::vec3(-50, 50, -50);
 
+    ballLightNode->lightColor = glm::vec3(1, 0, 0);
+    ceilingLightNode->lightColor = glm::vec3(0, 1, 0);
+    padLightNode->lightColor = glm::vec3(0, 0, 1);
 
 
     getTimeDeltaSeconds();
@@ -398,7 +395,8 @@ void renderNode(SceneNode* node) {
 void updateLightsInShader(SceneNode* node) {
     switch(node->nodeType) {
         case POINT_LIGHT:
-            glUniform3fv(shader->getUniformFromName("lights[" + std::to_string(node->lightIndex) + "]"), 1, glm::value_ptr(glm::vec3(node->currentTransformationMatrix[3])));
+            glUniform3fv(shader->getUniformFromName(fmt::format("lights[{}].position", std::to_string(node->lightIndex))), 1, glm::value_ptr(glm::vec3(node->currentTransformationMatrix[3])));
+            glUniform3fv(shader->getUniformFromName(fmt::format("lights[{}].color", std::to_string(node->lightIndex))), 1, glm::value_ptr(glm::vec3(node->lightColor)));
             break;
         default:
             break;

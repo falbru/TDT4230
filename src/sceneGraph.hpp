@@ -60,6 +60,7 @@ struct SceneNode {
     // Light logic
 	static int lightsCount;
 	int lightIndex;
+	glm::vec3 lightColor;
 };
 
 SceneNode* createSceneNode();
