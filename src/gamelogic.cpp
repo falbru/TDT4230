@@ -376,7 +376,6 @@ void updateNodeTransformations(SceneNode* node, glm::mat4 transformationThusFar)
 }
 
 void renderNode(SceneNode* node) {
-    glUniform3fv(shader->getUniformFromName("cameraPos"), 1, glm::value_ptr(cameraPosition));
     glUniformMatrix4fv(shader->getUniformFromName("M"), 1, GL_FALSE, glm::value_ptr(node->currentTransformationMatrix));
     glUniformMatrix3fv(shader->getUniformFromName("N"), 1, GL_FALSE, glm::value_ptr(node->currentNormalMatrix));
 
@@ -387,14 +386,26 @@ void renderNode(SceneNode* node) {
                 glDrawElements(GL_TRIANGLES, node->VAOIndexCount, GL_UNSIGNED_INT, nullptr);
             }
             break;
-        case POINT_LIGHT:
-            glUniform3fv(shader->getUniformFromName("lights[" + std::to_string(node->lightIndex) + "]"), 1, glm::value_ptr(glm::vec3(node->currentTransformationMatrix[3])));
-            break;
+        case POINT_LIGHT: break;
         case SPOT_LIGHT: break;
     }
 
     for(SceneNode* child : node->children) {
         renderNode(child);
+    }
+}
+
+void updateLightsInShader(SceneNode* node) {
+    switch(node->nodeType) {
+        case POINT_LIGHT:
+            glUniform3fv(shader->getUniformFromName("lights[" + std::to_string(node->lightIndex) + "]"), 1, glm::value_ptr(glm::vec3(node->currentTransformationMatrix[3])));
+            break;
+        default:
+            break;
+    }
+
+    for(SceneNode* child : node->children) {
+        updateLightsInShader(child);
     }
 }
 
@@ -405,6 +416,10 @@ void renderFrame(GLFWwindow* window) {
 
     glUniform1i(shader->getUniformFromName("lightsCount"), SceneNode::lightsCount);
     glUniformMatrix4fv(shader->getUniformFromName("VP"), 1, GL_FALSE, glm::value_ptr(VP));
+    glUniform3fv(shader->getUniformFromName("cameraPos"), 1, glm::value_ptr(cameraPosition));
+    glUniform3fv(shader->getUniformFromName("ballPos"), 1, glm::value_ptr(ballPosition));
+    glUniform1f(shader->getUniformFromName("ballRadius"), ballRadius);
 
+    updateLightsInShader(rootNode);
     renderNode(rootNode);
 }

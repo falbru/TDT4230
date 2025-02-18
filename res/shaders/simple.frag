@@ -10,10 +10,16 @@ out vec4 color;
 
 float rand(vec2 co) { return fract(sin(dot(co.xy, vec2(12.9898,78.233))) * 43758.5453); }
 float dither(vec2 uv) { return (rand(uv)*2.0-1.0) / 256.0; }
+vec3 reject(vec3 from, vec3 onto) {
+    return from - onto*dot(from, onto)/dot(onto, onto);
+}
 
 uniform int lightsCount;
 uniform vec3 lights[MAX_LIGHTS];
 uniform vec3 cameraPos;
+
+uniform float ballRadius;
+uniform vec3 ballPos;
 
 void main()
 {
@@ -32,8 +38,17 @@ void main()
 
     for (int i = 0; i < lightsCount; i++) {
         vec3 lightPos = lights[i];
-        vec3 lightDir = normalize(lightPos - fragPos);
-        float lightDist = length(lightPos - fragPos);
+
+        vec3 toLight = lightPos - fragPos;
+        float lightDist = length(toLight);
+        vec3 lightDir = normalize(toLight);
+
+        vec3 toBall = ballPos - fragPos;
+        float ballDist = length(toBall);
+
+        if (lightDist > ballDist && dot(toLight, toBall) > 0.0 && length(reject(toBall, toLight)) < ballRadius) {
+            continue;
+        }
 
         float diff = max(dot(normal, lightDir), 0.0);
         vec3 diffuse = diff * lightColor;
