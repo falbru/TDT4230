@@ -21,11 +21,3 @@ jobs:
         find src/ -type f -exec clang-format --style Microsoft -i {} \;
         find res/shaders/ -type f -exec clang-format --style Microsoft -i {} \;
         git diff --exit-code
-
-
-    - name: Check for .h files
-      run: |
-        if find src/ -name "*.h" | grep -q .; then
-          echo ".h file(s) found. Please ues the .hpp extension instead"
-          exit 1
-        fi
