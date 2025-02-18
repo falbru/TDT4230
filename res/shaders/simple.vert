@@ -12,8 +12,6 @@ uniform mat4 M;
 uniform mat4 VP;
 uniform mat3 N;
 
-uniform bool is2D;
-
 void main()
 {
     normal_out = normalize(N * normal_in);
@@ -22,15 +20,5 @@ void main()
     vec4 modelPos = M * vec4(position, 1.0f);
     fragPos_out = vec3(modelPos);
 
-    vec4 vertPos = modelPos;
-    if (is2D)
-    {
-        vertPos = vec4(modelPos.x, modelPos.y, 0.0, 1.0);
-    }
-    else
-    {
-        vertPos = VP * vertPos;
-    }
-
-    gl_Position = vertPos;
+    gl_Position = VP * modelPos;
 }

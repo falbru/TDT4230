@@ -49,6 +49,7 @@ double ballRadius = 3.0f;
 PNGImage charmap;
 
 glm::mat4 VP;
+glm::mat4 VP_2D;
 
 glm::vec3 cameraPosition(0, 2, -20);
 
@@ -141,7 +142,7 @@ void initGame(GLFWwindow *window, CommandLineOptions gameOptions)
     Mesh pad = cube(padDimensions, glm::vec2(30, 40), true);
     Mesh box = cube(boxDimensions, glm::vec2(90), true, true);
     Mesh sphere = generateSphere(1.0, 40, 40);
-    Mesh text = generateTextGeometryBuffer("Hello World", 39.0f / 29.0f, 1);
+    Mesh text = generateTextGeometryBuffer("Click to start the game", 39.0f / 29.0f, 500);
 
     // Fill buffers
     unsigned int ballVAO = generateBuffer(sphere);
@@ -151,6 +152,7 @@ void initGame(GLFWwindow *window, CommandLineOptions gameOptions)
 
     // Load textures
     charmap = loadPNGFile("../res/textures/charmap.png");
+    int charmapTextureId = genTexture(charmap);
 
     // Construct scene
     rootNode = createSceneNode();
@@ -182,10 +184,12 @@ void initGame(GLFWwindow *window, CommandLineOptions gameOptions)
     textNode->vertexArrayObjectID = textVAO;
     textNode->nodeType = SceneNodeType::GEOMETRY_2D;
     textNode->VAOIndexCount = text.indices.size();
+    textNode->textureID = charmapTextureId;
 
     ballNode->position = glm::vec3(0, 0, 0);
     padNode->position = glm::vec3(0, 0, 0);
     ceilingLightNode->position = glm::vec3(-50, 50, -50);
+    textNode->position = glm::vec3(50, 50, 0);
 
     ballLightNode->lightColor = glm::vec3(1, 0, 0);
     ceilingLightNode->lightColor = glm::vec3(0, 1, 0);
@@ -454,8 +458,18 @@ void renderNode(SceneNode *node)
     switch (node->nodeType)
     {
     case GEOMETRY:
+        glUniform1i(shader->getUniformFromName("is2D"), false);
+        glUniformMatrix4fv(shader->getUniformFromName("VP"), 1, GL_FALSE, glm::value_ptr(VP));
+        if (node->vertexArrayObjectID != -1)
+        {
+            glBindVertexArray(node->vertexArrayObjectID);
+            glDrawElements(GL_TRIANGLES, node->VAOIndexCount, GL_UNSIGNED_INT, nullptr);
+        }
+        break;
     case GEOMETRY_2D:
-        glUniform1i(shader->getUniformFromName("is2D"), node->nodeType == SceneNodeType::GEOMETRY_2D);
+        glUniform1i(shader->getUniformFromName("is2D"), true);
+        glUniformMatrix4fv(shader->getUniformFromName("VP"), 1, GL_FALSE, glm::value_ptr(VP_2D));
+        glBindTextureUnit(0, node->textureID);
         if (node->vertexArrayObjectID != -1)
         {
             glBindVertexArray(node->vertexArrayObjectID);
@@ -500,8 +514,9 @@ void renderFrame(GLFWwindow *window)
     glfwGetWindowSize(window, &windowWidth, &windowHeight);
     glViewport(0, 0, windowWidth, windowHeight);
 
+    VP_2D = glm::ortho(0.0f, (float)windowWidth, 0.0f, (float)windowHeight);
+
     glUniform1i(shader->getUniformFromName("lightsCount"), SceneNode::lightsCount);
-    glUniformMatrix4fv(shader->getUniformFromName("VP"), 1, GL_FALSE, glm::value_ptr(VP));
     glUniform3fv(shader->getUniformFromName("cameraPos"), 1, glm::value_ptr(cameraPosition));
     glUniform3fv(shader->getUniformFromName("ballPos"), 1, glm::value_ptr(ballPosition));
     glUniform1f(shader->getUniformFromName("ballRadius"), ballRadius);

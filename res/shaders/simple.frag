@@ -6,6 +6,8 @@ in layout(location = 0) vec3 normal_in;
 in layout(location = 1) vec2 textureCoordinates;
 in layout(location = 2) vec3 fragPos;
 
+layout(binding = 0) uniform sampler2D sampler;
+
 out vec4 color;
 
 float rand(vec2 co)
@@ -34,8 +36,15 @@ uniform vec3 cameraPos;
 uniform float ballRadius;
 uniform vec3 ballPos;
 
+uniform bool is2D;
+
 void main()
 {
+    if (is2D)
+    {
+        color = texture(sampler, textureCoordinates);
+        return;
+    }
     vec3 normal = normalize(normal_in);
 
     vec3 ambientColor = vec3(0.3, 0.3, 0.3);
