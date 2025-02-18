@@ -45,6 +45,8 @@ SceneNode *padLightNode;
 
 double ballRadius = 3.0f;
 
+PNGImage charmap;
+
 glm::mat4 VP;
 
 glm::vec3 cameraPosition(0, 2, -20);
@@ -130,6 +132,9 @@ void initGame(GLFWwindow *window, CommandLineOptions gameOptions)
     unsigned int ballVAO = generateBuffer(sphere);
     unsigned int boxVAO = generateBuffer(box);
     unsigned int padVAO = generateBuffer(pad);
+
+    // Load textures
+    charmap = loadPNGFile("../res/textures/charmap.png");
 
     // Construct scene
     rootNode = createSceneNode();
