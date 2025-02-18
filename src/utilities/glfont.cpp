@@ -8,11 +8,13 @@ Mesh generateTextGeometryBuffer(std::string text, float characterHeightOverWidth
 
     unsigned int vertexCount = 4 * text.length();
     unsigned int indexCount = 6 * text.length();
+    unsigned int textureCoordinateCount = 4 * text.length();
 
     Mesh mesh;
 
     mesh.vertices.resize(vertexCount);
     mesh.indices.resize(indexCount);
+    mesh.textureCoordinates.resize(textureCoordinateCount);
 
     for (unsigned int i = 0; i < text.length(); i++)
     {
@@ -32,6 +34,18 @@ Mesh generateTextGeometryBuffer(std::string text, float characterHeightOverWidth
         mesh.indices.at(6 * i + 3) = 4 * i + 0;
         mesh.indices.at(6 * i + 4) = 4 * i + 2;
         mesh.indices.at(6 * i + 5) = 4 * i + 3;
+
+        char character = text[i];
+        float u = character / 128.0f;
+        float uWidth = 1.0f / 128.0f;
+
+        mesh.textureCoordinates.at(4 * i + 0) = {u, 0};
+        mesh.textureCoordinates.at(4 * i + 1) = {u + uWidth, 0};
+        mesh.textureCoordinates.at(4 * i + 2) = {u + uWidth, 1.0f};
+
+        mesh.textureCoordinates.at(4 * i + 0) = {u, 0};
+        mesh.textureCoordinates.at(4 * i + 2) = {u + uWidth, 1.0f};
+        mesh.textureCoordinates.at(4 * i + 3) = {u, 1.0f};
     }
 
     return mesh;
