@@ -53,9 +53,9 @@ void main()
 
     float specularIntensity = 0.3;
 
-    float l_a = 0.9;
-    float l_b = 0.002;
-    float l_c = 0.002;
+    float l_a = 0.7;
+    float l_b = 0.003;
+    float l_c = 0.003;
 
     float softShadowRadius = 1.0;
 

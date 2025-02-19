@@ -41,8 +41,6 @@ SceneNode *padNode;
 SceneNode *textNode;
 
 SceneNode *ballLightNode;
-SceneNode *ceilingLightNode;
-SceneNode *padLightNode;
 
 double ballRadius = 3.0f;
 
@@ -161,13 +159,10 @@ void initGame(GLFWwindow *window, CommandLineOptions gameOptions)
     ballNode = createSceneNode();
     textNode = createSceneNode();
     ballLightNode = createLightSceneNode();
-    ceilingLightNode = createLightSceneNode();
-    padLightNode = createLightSceneNode();
 
     rootNode->children.push_back(boxNode);
     rootNode->children.push_back(padNode);
     rootNode->children.push_back(ballNode);
-    rootNode->children.push_back(ceilingLightNode);
     rootNode->children.push_back(textNode);
 
     boxNode->vertexArrayObjectID = boxVAO;
@@ -175,7 +170,6 @@ void initGame(GLFWwindow *window, CommandLineOptions gameOptions)
 
     padNode->vertexArrayObjectID = padVAO;
     padNode->VAOIndexCount = pad.indices.size();
-    padNode->children.push_back(padLightNode);
 
     ballNode->vertexArrayObjectID = ballVAO;
     ballNode->VAOIndexCount = sphere.indices.size();
@@ -188,12 +182,9 @@ void initGame(GLFWwindow *window, CommandLineOptions gameOptions)
 
     ballNode->position = glm::vec3(0, 0, 0);
     padNode->position = glm::vec3(0, 0, 0);
-    ceilingLightNode->position = glm::vec3(-50, 50, -50);
     textNode->position = glm::vec3(50, 50, 0);
 
-    ballLightNode->lightColor = glm::vec3(1, 0, 0);
-    ceilingLightNode->lightColor = glm::vec3(0, 1, 0);
-    padLightNode->lightColor = glm::vec3(0, 0, 1);
+    ballLightNode->lightColor = glm::vec3(1, 1, 1);
 
     getTimeDeltaSeconds();
 
