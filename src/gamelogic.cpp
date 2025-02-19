@@ -165,6 +165,7 @@ void initGame(GLFWwindow *window, CommandLineOptions gameOptions)
     rootNode->children.push_back(ballNode);
     rootNode->children.push_back(textNode);
 
+    boxNode->nodeType = SceneNodeType::NORMAL_MAPPED_GEOMETRY;
     boxNode->vertexArrayObjectID = boxVAO;
     boxNode->VAOIndexCount = box.indices.size();
 
