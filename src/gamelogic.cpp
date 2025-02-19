@@ -44,8 +44,6 @@ SceneNode *ballLightNode;
 
 double ballRadius = 3.0f;
 
-PNGImage charmap;
-
 glm::mat4 VP;
 glm::mat4 VP_2D;
 
@@ -149,8 +147,11 @@ void initGame(GLFWwindow *window, CommandLineOptions gameOptions)
     unsigned int textVAO = generateBuffer(text);
 
     // Load textures
-    charmap = loadPNGFile("../res/textures/charmap.png");
-    int charmapTextureId = genTexture(charmap);
+    PNGImage charmap = loadPNGFile("../res/textures/charmap.png");
+    int charmapTextureID = genTexture(charmap);
+
+    int boxDiffuseTextureID = genTexture(loadPNGFile("../res/textures/Brick03_col.png"));
+    int boxNormalMapTextureID = genTexture(loadPNGFile("../res/textures/Brick03_nrm.png"));
 
     // Construct scene
     rootNode = createSceneNode();
@@ -168,6 +169,8 @@ void initGame(GLFWwindow *window, CommandLineOptions gameOptions)
     boxNode->nodeType = SceneNodeType::NORMAL_MAPPED_GEOMETRY;
     boxNode->vertexArrayObjectID = boxVAO;
     boxNode->VAOIndexCount = box.indices.size();
+    boxNode->textureID = boxDiffuseTextureID;
+    boxNode->normalMapTextureID = boxNormalMapTextureID;
 
     padNode->vertexArrayObjectID = padVAO;
     padNode->VAOIndexCount = pad.indices.size();
@@ -179,7 +182,7 @@ void initGame(GLFWwindow *window, CommandLineOptions gameOptions)
     textNode->vertexArrayObjectID = textVAO;
     textNode->nodeType = SceneNodeType::GEOMETRY_2D;
     textNode->VAOIndexCount = text.indices.size();
-    textNode->textureID = charmapTextureId;
+    textNode->textureID = charmapTextureID;
 
     ballNode->position = glm::vec3(0, 0, 0);
     padNode->position = glm::vec3(0, 0, 0);
@@ -428,6 +431,7 @@ void updateNodeTransformations(SceneNode *node, glm::mat4 transformationThusFar)
     switch (node->nodeType)
     {
     case GEOMETRY:
+    case NORMAL_MAPPED_GEOMETRY:
         node->currentNormalMatrix = glm::transpose(glm::inverse(glm::mat3(node->currentTransformationMatrix)));
         break;
     case POINT_LIGHT:
@@ -451,6 +455,17 @@ void renderNode(SceneNode *node)
     {
     case GEOMETRY:
         glUniform1i(shader->getUniformFromName("is2D"), false);
+        glUniform1i(shader->getUniformFromName("useNM"), false);
+        glUniformMatrix4fv(shader->getUniformFromName("VP"), 1, GL_FALSE, glm::value_ptr(VP));
+        if (node->vertexArrayObjectID != -1)
+        {
+            glBindVertexArray(node->vertexArrayObjectID);
+            glDrawElements(GL_TRIANGLES, node->VAOIndexCount, GL_UNSIGNED_INT, nullptr);
+        }
+        break;
+    case NORMAL_MAPPED_GEOMETRY:
+        glUniform1i(shader->getUniformFromName("is2D"), false);
+        glUniform1i(shader->getUniformFromName("useNM"), true);
         glUniformMatrix4fv(shader->getUniformFromName("VP"), 1, GL_FALSE, glm::value_ptr(VP));
         if (node->vertexArrayObjectID != -1)
         {
@@ -460,6 +475,7 @@ void renderNode(SceneNode *node)
         break;
     case GEOMETRY_2D:
         glUniform1i(shader->getUniformFromName("is2D"), true);
+        glUniform1i(shader->getUniformFromName("useNM"), false);
         glUniformMatrix4fv(shader->getUniformFromName("VP"), 1, GL_FALSE, glm::value_ptr(VP_2D));
         glBindTextureUnit(0, node->textureID);
         if (node->vertexArrayObjectID != -1)

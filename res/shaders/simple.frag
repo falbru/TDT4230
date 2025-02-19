@@ -37,6 +37,7 @@ uniform float ballRadius;
 uniform vec3 ballPos;
 
 uniform bool is2D;
+uniform bool useNM;
 
 void main()
 {
@@ -45,6 +46,7 @@ void main()
         color = texture(sampler, textureCoordinates);
         return;
     }
+
     vec3 normal = normalize(normal_in);
 
     vec3 ambientColor = vec3(0.3, 0.3, 0.3);
