@@ -5,6 +5,7 @@
 in layout(location = 0) vec3 normal_in;
 in layout(location = 1) vec2 textureCoordinates;
 in layout(location = 2) vec3 fragPos;
+in layout(location = 3) mat3 TBN;
 
 layout(binding = 0) uniform sampler2D sampler;
 layout(binding = 1) uniform sampler2D normalMap;
@@ -51,7 +52,7 @@ void main()
     vec3 normal = normalize(normal_in);
     if (useNM)
     {
-        normal = texture(normalMap, textureCoordinates).xyz * 2.0 - vec3(1.0);
+        normal = normalize(texture(normalMap, textureCoordinates).xyz * 2.0 - vec3(1.0));
     }
 
     vec3 ambientColor = vec3(0.3, 0.3, 0.3);
