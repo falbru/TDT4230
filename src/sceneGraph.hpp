@@ -68,6 +68,7 @@ struct SceneNode
     // Textures
     unsigned int textureID;
     unsigned int normalMapTextureID;
+    unsigned int roughnessMapTextureID;
 
     // Light logic
     static int lightsCount;

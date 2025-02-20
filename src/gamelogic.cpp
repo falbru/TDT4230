@@ -152,6 +152,7 @@ void initGame(GLFWwindow *window, CommandLineOptions gameOptions)
 
     int boxDiffuseTextureID = genTexture(loadPNGFile("../res/textures/Brick03_col.png"));
     int boxNormalMapTextureID = genTexture(loadPNGFile("../res/textures/Brick03_nrm.png"));
+    int boxRoughnessMapTextureID = genTexture(loadPNGFile("../res/textures/Brick03_rgh.png"));
 
     // Construct scene
     rootNode = createSceneNode();
@@ -171,6 +172,7 @@ void initGame(GLFWwindow *window, CommandLineOptions gameOptions)
     boxNode->VAOIndexCount = box.indices.size();
     boxNode->textureID = boxDiffuseTextureID;
     boxNode->normalMapTextureID = boxNormalMapTextureID;
+    boxNode->roughnessMapTextureID = boxRoughnessMapTextureID;
 
     padNode->vertexArrayObjectID = padVAO;
     padNode->VAOIndexCount = pad.indices.size();
@@ -469,6 +471,7 @@ void renderNode(SceneNode *node)
         glUniformMatrix4fv(shader->getUniformFromName("VP"), 1, GL_FALSE, glm::value_ptr(VP));
         glBindTextureUnit(0, node->textureID);
         glBindTextureUnit(1, node->normalMapTextureID);
+        glBindTextureUnit(2, node->roughnessMapTextureID);
         if (node->vertexArrayObjectID != -1)
         {
             glBindVertexArray(node->vertexArrayObjectID);

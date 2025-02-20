@@ -9,6 +9,7 @@ in layout(location = 3) mat3 TBN;
 
 layout(binding = 0) uniform sampler2D sampler;
 layout(binding = 1) uniform sampler2D normalMap;
+layout(binding = 2) uniform sampler2D roughnessMap;
 
 out vec4 color;
 
@@ -60,6 +61,11 @@ void main()
     vec3 resultColor = vec3(0.0);
 
     float specularIntensity = 0.3;
+    if (useNM)
+    {
+        float roughness = length(texture(roughnessMap, textureCoordinates));
+        specularIntensity = 5.0 / (roughness * roughness);
+    }
 
     float l_a = 0.8;
     float l_b = 0.0009;
