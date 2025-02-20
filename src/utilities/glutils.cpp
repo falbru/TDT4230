@@ -24,6 +24,40 @@ unsigned int generateBuffer(Mesh &mesh)
     if (mesh.normals.size() > 0)
     {
         generateAttribute(1, 3, mesh.normals, true);
+
+        std::vector<glm::vec3> tangents;
+        std::vector<glm::vec3> bitangents;
+        for (int i = 0; i < mesh.vertices.size(); i += 3)
+        {
+            glm::vec3 &v0 = mesh.vertices[i];
+            glm::vec3 &v1 = mesh.vertices[i + 1];
+            glm::vec3 &v2 = mesh.vertices[i + 2];
+
+            glm::vec2 &uv0 = mesh.textureCoordinates[i];
+            glm::vec2 &uv1 = mesh.textureCoordinates[i + 1];
+            glm::vec2 &uv2 = mesh.textureCoordinates[i + 2];
+
+            glm::vec3 deltaPos1 = v1 - v0;
+            glm::vec3 deltaPos2 = v2 - v0;
+
+            glm::vec2 deltaUV1 = uv1 - uv0;
+            glm::vec2 deltaUV2 = uv2 - uv0;
+
+            float r = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV1.y * deltaUV2.x);
+            glm::vec3 tangent = (deltaPos1 * deltaUV2.y - deltaPos2 * deltaUV1.y) * r;
+            glm::vec3 bitangent = (deltaPos2 * deltaUV1.x - deltaPos1 * deltaUV2.x) * r;
+
+            tangents.push_back(tangent);
+            tangents.push_back(tangent);
+            tangents.push_back(tangent);
+
+            bitangents.push_back(bitangent);
+            bitangents.push_back(bitangent);
+            bitangents.push_back(bitangent);
+        }
+
+        generateAttribute(3, 3, tangents, true);
+        generateAttribute(4, 3, bitangents, true);
     }
     if (mesh.textureCoordinates.size() > 0)
     {
