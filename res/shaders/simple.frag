@@ -7,6 +7,7 @@ in layout(location = 1) vec2 textureCoordinates;
 in layout(location = 2) vec3 fragPos;
 
 layout(binding = 0) uniform sampler2D sampler;
+layout(binding = 1) uniform sampler2D normalMap;
 
 out vec4 color;
 
@@ -48,6 +49,10 @@ void main()
     }
 
     vec3 normal = normalize(normal_in);
+    if (useNM)
+    {
+        normal = texture(normalMap, textureCoordinates).xyz * 2.0 - vec3(1.0);
+    }
 
     vec3 ambientColor = vec3(0.3, 0.3, 0.3);
 
@@ -55,9 +60,9 @@ void main()
 
     float specularIntensity = 0.3;
 
-    float l_a = 0.7;
-    float l_b = 0.003;
-    float l_c = 0.003;
+    float l_a = 0.8;
+    float l_b = 0.0009;
+    float l_c = 0.0007;
 
     float softShadowRadius = 1.0;
 
@@ -95,7 +100,14 @@ void main()
         resultColor += (diffuse + specular) * attenuation * shadowFactor;
     }
 
-    resultColor += ambientColor;
+    if (useNM)
+    {
+        resultColor *= texture(sampler, textureCoordinates).xyz;
+    }
+    else
+    {
+        resultColor += ambientColor;
+    }
 
     color = vec4(resultColor + dither(textureCoordinates), 1.0);
 }

@@ -467,6 +467,8 @@ void renderNode(SceneNode *node)
         glUniform1i(shader->getUniformFromName("is2D"), false);
         glUniform1i(shader->getUniformFromName("useNM"), true);
         glUniformMatrix4fv(shader->getUniformFromName("VP"), 1, GL_FALSE, glm::value_ptr(VP));
+        glBindTextureUnit(0, node->textureID);
+        glBindTextureUnit(1, node->normalMapTextureID);
         if (node->vertexArrayObjectID != -1)
         {
             glBindVertexArray(node->vertexArrayObjectID);
