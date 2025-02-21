@@ -56,7 +56,7 @@ void main()
         normal = TBN * (texture(normalMap, textureCoordinates).xyz * 2.0 - 1.0);
     }
 
-    vec3 ambientColor = vec3(0.3, 0.3, 0.3);
+    vec3 ambientColor = vec3(0.1, 0.1, 0.1);
 
     vec3 resultColor = vec3(0.0);
 
@@ -67,9 +67,9 @@ void main()
         specularIntensity = 5.0 / (roughness * roughness);
     }
 
-    float l_a = 0.8;
-    float l_b = 0.0009;
-    float l_c = 0.0007;
+    float l_a = 1;
+    float l_b = 0.01009;
+    float l_c = 0.00107;
 
     float softShadowRadius = 1.0;
 
@@ -107,13 +107,11 @@ void main()
         resultColor += (diffuse + specular) * attenuation * shadowFactor;
     }
 
+    resultColor += ambientColor;
+
     if (useNM)
     {
         resultColor *= texture(sampler, textureCoordinates).xyz;
-    }
-    else
-    {
-        resultColor += ambientColor;
     }
 
     color = vec4(resultColor + dither(textureCoordinates), 1.0);
